@@ -1,0 +1,24 @@
+{
+  "name": "geo_examen_2p",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuasteEd/geo2P.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SuasteEd/geo2P/issues"
+  },
+  "homepage": "https://github.com/SuasteEd/geo2P#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "got": "^12.6.0"
+  }
+}
