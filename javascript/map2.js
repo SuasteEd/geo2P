@@ -98,7 +98,83 @@
 
 // }
 
-if (navigator.geolocation) {
+const urlParams = new URLSearchParams(window.location.search);
+const latitud = urlParams.get("latitud");
+const longitud = urlParams.get("longitud");
+const nombre = urlParams.get("nombre");
+
+if (latitud && longitud) {
+  const userLatLng = new google.maps.LatLng(latitud, longitud);
+
+  // Obtenemos los datos de la sucursal desde el servidor
+  fetch("http://192.168.18.10:4001/api/branches/all")
+    .then((response) => response.json())
+    .then((data) => {
+      // Calcular la distancia entre la ubicación del usuario y cada sucursal
+      const sucursales = data.map((sucursal) => {
+        const sucursalLatLng = new google.maps.LatLng(
+          sucursal.latitude,
+          sucursal.longitude
+        );
+        const distancia = google.maps.geometry.spherical.computeDistanceBetween(
+          userLatLng,
+          sucursalLatLng
+        );
+        return { ...sucursal, distancia };
+      });
+
+      // Encontrar la sucursal más cercana
+      const sucursalMasCercana = sucursales.reduce(function (prev, curr) {
+        return prev.distancia < curr.distancia ? prev : curr;
+      });
+
+      // Crear el objeto LatLng correspondiente a la ubicación de la sucursal
+      const sucursalLatLng = new google.maps.LatLng(
+        sucursalMasCercana.latitude,
+        sucursalMasCercana.longitude
+      );
+
+      // Crear el mapa y centrarlo en la ubicación del usuario
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: userLatLng,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
+
+      // Crear marcadores y agregarlos al mapa
+      const userMarker = new google.maps.Marker({
+        position: userLatLng,
+        map: map,
+        title: "Tu ubicación actual",
+      });
+
+      const sucursalMarker = new google.maps.Marker({
+        position: sucursalLatLng,
+        map: map,
+        title: sucursalMasCercana.name,
+      });
+
+      // Calcular la ruta desde la ubicación del usuario hasta la sucursal más cercana
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: userLatLng,
+          destination: sucursalLatLng,
+          travelMode: "WALKING",
+        },
+        (response, status) => {
+          if (status === "OK") {
+            new google.maps.DirectionsRenderer({
+              suppressMarkers: true,
+              directions: response,
+              map: map,
+            });
+          }
+        }
+      );
+    });
+} else {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const userLat = position.coords.latitude;
@@ -106,7 +182,7 @@ if (navigator.geolocation) {
         const userLatLng = new google.maps.LatLng(userLat, userLong);
 
         // Obtenemos los datos de la sucursal desde el servidor
-        fetch("http://192.168.1.101:4001/api/branches/all")
+        fetch("http://192.168.18.10:4001/api/branches/all")
           .then((response) => response.json())
           .then((data) => {
             // Calcular la distancia entre la ubicación del usuario y cada sucursal
@@ -115,10 +191,11 @@ if (navigator.geolocation) {
                 sucursal.latitude,
                 sucursal.longitude
               );
-              const distancia = google.maps.geometry.spherical.computeDistanceBetween(
-                userLatLng,
-                sucursalLatLng
-              );
+              const distancia =
+                google.maps.geometry.spherical.computeDistanceBetween(
+                  userLatLng,
+                  sucursalLatLng
+                );
               return { ...sucursal, distancia };
             });
 
@@ -186,7 +263,7 @@ if (navigator.geolocation) {
     // Si el navegador no admite la geolocalización, mostrar un mensaje de error
     alert("Tu navegador no admite la geolocalización");
   }
-
+}
 // if (navigator.geolocation) {
 //   navigator.geolocation.getCurrentPosition(
 //     (position) => {
