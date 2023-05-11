@@ -11,7 +11,8 @@ app.use(express.static(path.join(__dirname, "javascript")));
 app.use(express.static(path.join(__dirname, "views")));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "/views/map.html"));
+    res.sendFile(path.join(__dirname, "/views/index.html"));
   });
+
 
 app.listen(3001);
