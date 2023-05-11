@@ -2,7 +2,7 @@
   "name": "geo_examen_2p",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "map.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -376,7 +376,7 @@ navigator.geolocation.getCurrentPosition(position => {
   });
 
   // Hacer una petición GET a la API
-  fetch('http://192.168.18.10:4001/api/branches/all')
+  fetch('http://172.18.70.160:4001/api/branches/all')
     .then(response => response.json())
     .then(data => {
       // Iterar sobre los datos recibidos
