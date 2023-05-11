@@ -2,9 +2,43 @@
 <html lang="en">
   <head>
     <title>Google Maps API Directions Services</title>
+    <link rel="stylesheet" href="/ol.css" />
+    <link rel="stylesheet" href="/map.css" />
   </head>
   <body>
-    <div id="map" style="height: 100vh"></div>
+    <div class="cuadrito">
+      <div id="map" style="height: 100vh"></div>
+      <div id="container">
+        <p>My nearest store</p>
+        <form id="form" action="/map2.html">
+          <select id="Cbox" onchange="mostrarBoton()">
+            <option value="">Selecciona una opción</option>
+            <option value="">Mi ubicación</option>
+            <option value="agregar">Agregar ubicación</option>
+          </select>
+          <input
+            id="name"
+            name="name"
+            spellcheck="false"
+            oninput="checkValid(event)"
+            type="text"
+            placeholder="Nombre" />
+          <input
+            id="latitud"
+            name="latitud"
+            oninput="checkValid(event)"
+            type="text"
+            placeholder="Latitud" />
+          <input
+            id="longitud"
+            name="longitud"
+            oninput="checkValid(event)"
+            type="text"
+            placeholder="Longitud" />
+          <button type="submit" id="track">Enviar</button>
+        </form>
+      </div>
+    </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwtIplpe52JJBXyOiOnnNPjJMshD2RTSY&libraries=geometry"></script>
     <script src="/map.js"></script>
   </body>

@@ -5,6 +5,7 @@ var app = express();
 
 app.use(express.static(path.join(__dirname, "javascript")));
 app.use(express.static(path.join(__dirname, "style")));
+app.use(express.static(path.join(__dirname, "node_modules/ol")));
 app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "javascript")));
 app.use(express.static(path.join(__dirname, "views")));

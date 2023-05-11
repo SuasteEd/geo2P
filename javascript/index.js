@@ -26,4 +26,3 @@ const swiper = new Swiper(".swiper", {
   const checkValid = (event) => {
     event.target.nextElementSibling.disabled = !event.target.value.length;
   };
-  
