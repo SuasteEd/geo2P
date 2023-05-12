@@ -1,28 +1,77 @@
-const swiper = new Swiper(".swiper", {
-    // Optional parameters
-    speed: 500,
-    allowTouchMove: false,
+var combo = document.getElementById("Cbox");
+var nombre = document.getElementById("name");
+const latitud = document.getElementById("latitud");
+const longitud = document.getElementById("longitud");
+latitud.style.display = "none";
+longitud.style.display = "none";
+
+function mostrarBoton() {
+  if (combo.value !== "") {
+    latitud.style.display = "block";
+    longitud.style.display = "block";
+  } else {
+    latitud.style.display = "none";
+    longitud.style.display = "none";
+    enviar();
+  }
+}
+
+function enviar() {
+  if (combo.value !== "") {
+    window.location.href =
+      "mapa.html?latitud=" + latitud.value + "&longitud=" + longitud.value;
+  }
+}
+
+//Obetenr la ubicación actual
+navigator.geolocation.getCurrentPosition((position) => {
+  const { latitude, longitude } = position.coords;
+
+  // Crear el mapa
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: latitude, lng: longitude },
+    zoom: 13,
   });
-  
-  const gotoSlide = (index) => {
-    swiper.slideTo(index);
-  };
-  
-  const restart = () => {
-    const inputs = document.querySelectorAll("input");
-    const buttons = document.querySelectorAll("button[type=button]");
-  
-    buttons.forEach((button) => {
-      button.disabled = true;
-    });
-  
-    inputs.forEach((input) => {
-      input.value = "";
-    });
-  
-    gotoSlide(0);
-  };
-  
-  const checkValid = (event) => {
-    event.target.nextElementSibling.disabled = !event.target.value.length;
-  };
+
+  // Crear el marcador de la ubicación actual
+  const currentPosition = new google.maps.LatLng(latitude, longitude);
+  const currentLocationMarker = new google.maps.Marker({
+    position: currentPosition,
+    map: map,
+    title: "Tu ubicación actual",
+    icon: {
+      //url: "https://i.gifer.com/6os.gif",",
+      //url: "https://media.tenor.com/Z6sMOpVRG78AAAAj/searching-loading.gif",
+      url: "https://media.tenor.com/-4g25E-JtEIAAAAj/your-mom-is-a-hoe-kys.gif",
+      scaledSize: new google.maps.Size(80, 80),
+    },
+  });
+
+  // Hacer una petición GET a la API
+  fetch("http://172.18.70.94:4001/api/branches/all")
+    .then((response) => response.json())
+    .then((data) => {
+      // Iterar sobre los datos recibidos
+      data.forEach((branch) => {
+        // Obtener la ubicación de la sucursal
+        const position = new google.maps.LatLng(
+          branch.latitude,
+          branch.longitude
+        );
+
+        // Crear el marcador de la sucursal
+        const marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: branch.name,
+          icon: {
+            url: "https://cdn.iconscout.com/icon/free/png-512/free-store-297-729039.png?f=avif&w=512",
+            //url: "https://media.tenor.com/-0lktyAgFDsAAAAi/cookie-sweet.gif",
+            //url: "https://media.tenor.com/VJNNkbWE3H4AAAAi/yoshi-mario.gif",
+            scaledSize: new google.maps.Size(60, 60),
+          },
+        });
+      });
+    })
+    .catch((error) => console.log(error));
+});
